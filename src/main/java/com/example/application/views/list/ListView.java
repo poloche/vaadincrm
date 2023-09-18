@@ -1,26 +1,65 @@
 package com.example.application.views.list;
 
+import com.example.application.data.entity.Contact;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-@PageTitle("list")
+import java.util.Collections;
+
+@PageTitle("Contacts | Vaadin CRM ")
 @Route(value = "")
 public class ListView extends VerticalLayout {
-
+    Grid<Contact> grid = new Grid<>(Contact.class);
+    TextField filterText = new TextField();
+ContactForm form;
     public ListView() {
-        Button button = new Button("Click me");
-        TextField name = new TextField("Name");
+        addClassName("list-view");
+        setSizeFull();
 
-        HorizontalLayout hl = new HorizontalLayout(name, button);
-        hl.setDefaultVerticalComponentAlignment(Alignment.BASELINE);
+        configureGrid();
+        configureForm();
 
-        button.addClickListener(e -> Notification.show("Hello " + name.getValue()));
-        add(hl);
+        add(getToolBar(), getContent());
+    }
+
+    private Component getContent() {
+        HorizontalLayout content = new HorizontalLayout(grid, form);
+        content.setFlexGrow(2, grid);
+        content.setFlexGrow(1, form);
+        content.setSizeFull();
+        return content;
+    }
+
+    private void configureForm() {
+        form = new ContactForm(Collections.emptyList(), Collections.emptyList());
+        form.setWidth("25em");
+    }
+
+    private Component getToolBar() {
+        filterText.setPlaceholder("Filtering by name ....");
+        filterText.setClearButtonVisible(true);
+        filterText.setValueChangeMode(ValueChangeMode.LAZY);
+
+        Button addContactButton = new Button("Add contact");
+        HorizontalLayout toolbar = new HorizontalLayout(filterText, addContactButton);
+        toolbar.addClassName("tool-bar");
+        return toolbar;
+    }
+
+    private void configureGrid() {
+        grid.addClassName("contact-grid");
+        grid.setSizeFull();
+        grid.setColumns("firstName", "lastName", "email");
+        grid.addColumn(contact -> contact.getStatus().getName()).setHeader("Status");
+        grid.addColumn(contact -> contact.getCompany().getName()).setHeader("Company");
+        grid.getColumns().forEach(contactColumn -> contactColumn.setAutoWidth(true));
     }
 
 }
