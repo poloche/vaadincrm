@@ -82,7 +82,7 @@ public class ListView extends VerticalLayout {
         addContactButton.addClickListener(e -> addContact());
 
         HorizontalLayout toolbar = new HorizontalLayout(filterText, addContactButton);
-        toolbar.addClassName("tool-bar");
+        toolbar.addClassName("toolbar");
         return toolbar;
     }
 
@@ -92,13 +92,16 @@ public class ListView extends VerticalLayout {
     }
 
     private void configureGrid() {
-        grid.addClassName("contact-grid");
+        grid.addClassNames("contact-grid");
         grid.setSizeFull();
         grid.setColumns("firstName", "lastName", "email");
         grid.addColumn(contact -> contact.getStatus().getName()).setHeader("Status");
         grid.addColumn(contact -> contact.getCompany().getName()).setHeader("Company");
+
         grid.getColumns().forEach(contactColumn -> contactColumn.setAutoWidth(true));
+
         grid.asSingleSelect().addValueChangeListener(e -> editContact(e.getValue()));
+
     }
 
     private void editContact(Contact contact) {
