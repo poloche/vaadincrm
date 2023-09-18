@@ -32,9 +32,8 @@ public class ContactForm extends FormLayout {
     Button save = new Button("Save");
     Button delete = new Button("Delete");
     Button cancel = new Button("Cancel");
-    private Contact contact;
 
-    Logger log = LoggerFactory.getLogger(ContactForm.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ContactForm.class);
 
     public ContactForm(List<Company> companies, List<Status> statuses) {
         addClassName("contact-form");
@@ -75,7 +74,7 @@ public class ContactForm extends FormLayout {
         if (binder.isValid()) {
             fireEvent(new SaveEvent(this, binder.getBean()));
         } else {
-            log.error("invalid form");
+            LOG.error("invalid form");
         }
     }
 
