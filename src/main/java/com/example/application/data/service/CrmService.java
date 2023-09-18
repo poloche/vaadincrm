@@ -54,4 +54,8 @@ public class CrmService {
     public List<Status> findAllStatuses() {
         return statusRepository.findAll();
     }
+
+    public void deleteContact(Contact contact) {
+        contactRepository.delete(contact);
+    }
 }

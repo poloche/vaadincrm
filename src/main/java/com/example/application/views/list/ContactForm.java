@@ -55,23 +55,19 @@ public class ContactForm extends FormLayout {
                 createButtonLayouts());
     }
 
-    public void setContact(Contact contact) {
-        this.contact = contact;
-        binder.readBean(contact);
-    }
-
     private Component createButtonLayouts() {
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
         cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
 
-        save.addClickListener(event -> validateAndSave()); // <1>
-        delete.addClickListener(event -> fireEvent(new DeleteEvent(this, binder.getBean()))); // <2>
-        cancel.addClickListener(event -> fireEvent(new CloseEvent(this))); // <3>
-
-
         save.addClickShortcut(Key.ENTER);
-        save.addClickShortcut(Key.ESCAPE);
+        cancel.addClickShortcut(Key.ESCAPE);
+
+        save.addClickListener(event -> validateAndSave());
+        delete.addClickListener(event -> fireEvent(new DeleteEvent(this, binder.getBean())));
+        cancel.addClickListener(event -> fireEvent(new CloseEvent(this)));
+
+        binder.addStatusChangeListener(e -> save.setEnabled(binder.isValid()));
         return new HorizontalLayout(save, delete, cancel);
     }
 
@@ -81,6 +77,11 @@ public class ContactForm extends FormLayout {
         } else {
             log.error("invalid form");
         }
+    }
+
+
+    public void setContact(Contact contact) {
+        binder.setBean(contact);
     }
 
     public abstract static class ContactFormEvent extends ComponentEvent<ContactForm> {
